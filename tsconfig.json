@@ -1,0 +1,59 @@
+{
+  "compilerOptions": {
+    /* Language and Environment */
+    "target": "ES2022",                          // Modern JavaScript features
+    "lib": ["ES2022"],                           // Standard library to include
+    "module": "commonjs",                        // CommonJS for Node.js compatibility
+    
+    /* Modules */
+    "rootDir": "./src",                          // Source files location
+    "moduleResolution": "node",                  // Node.js-style module resolution
+    "baseUrl": "./",                             // Base directory for non-relative imports
+    "paths": {
+      "@/*": ["src/*"]                           // Path aliases for cleaner imports
+    },
+    "resolveJsonModule": true,                   // Allow importing JSON files
+    
+    /* Emit */
+    "outDir": "./dist",                          // Output directory for compiled files
+    "removeComments": true,                      // Strip comments from output
+    "declaration": true,                         // Generate .d.ts files
+    "declarationMap": true,                      // Source maps for declarations
+    "sourceMap": true,                           // Generate source maps for debugging
+    
+    /* Interop Constraints */
+    "esModuleInterop": true,                     // Enables default imports from CommonJS
+    "allowSyntheticDefaultImports": true,        // Allow default imports from modules
+    "forceConsistentCasingInFileNames": true,    // Ensure consistent file name casing
+    "isolatedModules": true,                     // Ensure each file can be transpiled independently
+    
+    /* Type Checking */
+    "strict": true,                              // Enable all strict type-checking options
+    "noImplicitAny": true,                       // Error on expressions with implied 'any'
+    "strictNullChecks": true,                    // Enable strict null checks
+    "strictFunctionTypes": true,                 // Enable strict checking of function types
+    "strictBindCallApply": true,                 // Enable strict bind/call/apply methods
+    "strictPropertyInitialization": true,        // Ensure class properties are initialized
+    "noImplicitThis": true,                      // Error on 'this' with implied 'any'
+    "alwaysStrict": true,                        // Parse in strict mode
+    
+    /* Additional Checks */
+    "noUnusedLocals": true,                      // Report errors on unused locals
+    "noUnusedParameters": true,                  // Report errors on unused parameters
+    "noImplicitReturns": true,                   // Report error when not all paths return
+    "noFallthroughCasesInSwitch": true,         // Report errors for fallthrough cases
+    "noUncheckedIndexedAccess": true,           // Add undefined to index signature results
+    
+    /* Completeness */
+    "skipLibCheck": true                         // Skip type checking of declaration files
+  },
+  "include": [
+    "src/**/*"                                   // Include all files in src directory
+  ],
+  "exclude": [
+    "node_modules",                              // Exclude dependencies
+    "dist",                                      // Exclude build output
+    "**/*.spec.ts",                              // Exclude test files
+    "**/*.test.ts"                               // Exclude test files
+  ]
+}
