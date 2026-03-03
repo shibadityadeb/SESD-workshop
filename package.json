@@ -7,8 +7,8 @@
     "devforge": "./dist/index.js"
   },
   "scripts": {
-    "dev": "ts-node src/index.ts",
-    "build": "tsc",
+    "dev": "ts-node -r tsconfig-paths/register src/index.ts",
+    "build": "tsc && tsc-alias",
     "start": "node dist/index.js",
     "clean": "rm -rf dist",
     "prepare": "npm run build"
@@ -30,6 +30,8 @@
   "devDependencies": {
     "@types/node": "^25.3.3",
     "ts-node": "^10.9.2",
+    "tsc-alias": "^1.8.16",
+    "tsconfig-paths": "^4.2.0",
     "typescript": "^5.9.3"
   }
 }

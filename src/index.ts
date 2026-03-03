@@ -1,47 +1,78 @@
 #!/usr/bin/env node
 
 import { Command } from 'commander';
-import chalk from 'chalk';
 import dotenv from 'dotenv';
+import { getCommandRegistry } from '@/registry';
+import { Logger } from '@/utils';
+import { HelloCommand, InfoCommand, GitHubUserCommand } from '@/commands';
 
 // Load environment variables
 dotenv.config();
 
-// Initialize Commander
-const program = new Command();
+/**
+ * DevForge CLI Entry Point
+ * 
+ * This is the main entry point for the CLI application.
+ * Uses the Command Registry pattern for managing commands.
+ * 
+ * Architecture:
+ * - Commands are registered with the CommandRegistry
+ * - Registry integrates with Commander.js
+ * - Each command extends BaseCommand
+ * - Centralized error handling and logging
+ */
 
-// CLI Metadata
-program
-  .name('devforge')
-  .description(chalk.cyan('DevForge CLI - A production-level CLI tool'))
-  .version('1.0.0');
+/**
+ * Initialize the CLI application
+ */
+async function initializeCLI(): Promise<void> {
+  try {
+    // Initialize Commander program
+    const program = new Command();
 
-// Example command: Hello
-program
-  .command('hello')
-  .description('Say hello')
-  .option('-n, --name <name>', 'Your name', 'World')
-  .action((options) => {
-    console.log(chalk.green(`Hello, ${options.name}!`));
-  });
+    // CLI Metadata
+    program
+      .name('devforge')
+      .description('DevForge CLI - A production-level CLI tool built with OOP architecture')
+      .version('1.0.0')
+      .option('-v, --verbose', 'Enable verbose logging');
 
-// Example command: Info
-program
-  .command('info')
-  .description('Display CLI information')
-  .action(() => {
-    console.log(chalk.blue.bold('\n📦 DevForge CLI'));
-    console.log(chalk.gray('━'.repeat(50)));
-    console.log(chalk.white('Version:'), chalk.yellow('1.0.0'));
-    console.log(chalk.white('Description:'), 'Production-level CLI tool');
-    console.log(chalk.white('Built with:'), chalk.cyan('Node.js & TypeScript'));
-    console.log(chalk.gray('━'.repeat(50) + '\n'));
-  });
+    // Get the command registry instance
+    const registry = getCommandRegistry();
 
-// Parse arguments and execute commands
-program.parse(process.argv);
+    // Register commands
+    registry.register(new HelloCommand());
+    registry.register(new InfoCommand());
+    registry.register(new GitHubUserCommand());
+    
+    Logger.debug('Command registry initialized');
 
-// Show help if no command provided
-if (!process.argv.slice(2).length) {
-  program.outputHelp();
+    // Register all commands with Commander.js
+    registry.registerAll(program);
+
+    // Global error handler
+    process.on('unhandledRejection', (reason: Error) => {
+      Logger.error('Unhandled rejection:', reason);
+      process.exit(1);
+    });
+
+    process.on('uncaughtException', (error: Error) => {
+      Logger.error('Uncaught exception:', error);
+      process.exit(1);
+    });
+
+    // Parse arguments and execute commands
+    program.parse(process.argv);
+
+    // Show help if no command provided
+    if (!process.argv.slice(2).length) {
+      program.outputHelp();
+    }
+  } catch (error) {
+    Logger.error('Failed to initialize CLI:', error);
+    process.exit(1);
+  }
 }
+
+// Start the CLI
+initializeCLI();
