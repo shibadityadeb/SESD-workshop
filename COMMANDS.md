@@ -57,6 +57,7 @@ devforge <command> --help
 |---------|-------|----------|-------------|
 | `hello` | `hi` | Utility | Say hello to someone |
 | `info` | - | Utility | Display CLI information |
+| `version` | - | Utility | Display CLI version information |
 | `greet` | `g` | Core | Print a styled greeting message |
 | `fileinfo` | `fi` | Core | Display detailed file metadata |
 | `hash` | `h` | Core | Generate cryptographic hashes |
@@ -64,6 +65,7 @@ devforge <command> --help
 | `sysinfo` | `si` | Core | Display system information |
 | `github` | `gh` | API | Fetch GitHub user information |
 | `quote` | `q` | API | Get random inspirational quote |
+| `joke` | `j` | API | Get random jokes |
 
 ---
 
@@ -510,9 +512,59 @@ A production-level CLI tool built with OOP architecture
 
 ---
 
+### 8. **version** - CLI Version Information
+
+**Purpose:** Display detailed version information for DevForge CLI
+
+**Usage:**
+```bash
+devforge version
+devforge version --json
+```
+
+**No Arguments Required**
+
+**Examples:**
+```bash
+# Display version
+devforge version
+
+# Output as JSON
+devforge version --json
+```
+
+**Output (Text):**
+```
+══════════════════════════════════════════════════
+  DevForge CLI
+══════════════════════════════════════════════════
+
+Version:     1.0.0
+Name:        devforge-cli
+
+DevForge CLI - A production-level CLI tool built with Node.js and TypeScript
+```
+
+**Output (JSON):**
+```json
+{
+  "version": "1.0.0",
+  "name": "devforge-cli",
+  "description": "DevForge CLI - A production-level CLI tool built with Node.js and TypeScript"
+}
+```
+
+**Features:**
+- 📦 Reads directly from package.json
+- 🔄 Always up-to-date with package version
+- 📊 Supports JSON output for automation
+- 💾 Can save to file with --save flag
+
+---
+
 ## API Integration Commands
 
-### 8. **github** - GitHub User Lookup
+### 9. **github** - GitHub User Lookup
 
 **Purpose:** Fetch and display GitHub user information via GitHub API
 
@@ -670,6 +722,111 @@ devforge q
 
 ---
 
+### 10. **joke** - Random Jokes
+
+**Purpose:** Get random jokes to lighten up your day
+
+**Usage:**
+```bash
+devforge joke
+devforge j                  # Using alias
+devforge joke --json        # JSON output
+devforge joke --save joke.txt
+```
+
+**No Arguments Required**
+
+**Setup:** ✅ No API key needed - works out of the box!
+
+**Examples:**
+```bash
+# Get a random joke
+devforge joke
+
+# Using alias
+devforge j
+
+# Get joke in JSON format
+devforge joke --json
+
+# Save joke to file
+devforge joke --save my-joke.txt
+```
+
+**Output Example 1:**
+```
+⏳ Fetching joke...
+
+──────────────────────────────────────────────────
+😂 RANDOM JOKE
+──────────────────────────────────────────────────
+
+Setup:
+  What did one snowman say to the other snow man?
+
+Punchline:
+  Do you smell carrot?
+
+Type: general
+
+✔ Joke retrieved successfully
+```
+
+**Output Example 2:**
+```
+──────────────────────────────────────────────────
+😂 RANDOM JOKE
+──────────────────────────────────────────────────
+
+Setup:
+  What is the most used language in programming?
+
+Punchline:
+  Profanity.
+
+Type: programming
+
+✔ Joke retrieved successfully
+```
+
+**Output (JSON Format):**
+```json
+{
+  "id": 381,
+  "type": "programming",
+  "setup": "What is the most used language in programming?",
+  "punchline": "Profanity."
+}
+```
+
+**Features:**
+- 😂 Random jokes (general, programming, knock-knock)
+- 🎨 Beautiful styled output
+- 📊 Supports --json flag for structured output
+- 💾 Supports --save flag to export jokes
+- 🆓 No API key required
+- 🔄 Different joke each time
+- 🎭 Various joke types and categories
+
+**Error Handling:**
+```bash
+# Network error
+# ✖ Network error: Unable to connect to Joke API
+# ⚠ Please check your internet connection
+
+# API unavailable
+# ✖ No jokes available at the moment
+# ⚠ Please try again later
+```
+
+**API Details:**
+- Provider: Official Joke API
+- Free tier: Unlimited requests
+- Authentication: None required
+- API Endpoint: https://official-joke-api.appspot.com/
+
+---
+
 ## Global Options
 
 These options work with all commands:
@@ -678,6 +835,8 @@ These options work with all commands:
 |--------|-------------|
 | `-V, --version` | Output the version number |
 | `-v, --verbose` | Enable verbose logging |
+| `--json` | Output results in JSON format |
+| `--save <filename>` | Save output to a file |
 | `-h, --help` | Display help for command |
 
 **Examples:**
@@ -690,6 +849,11 @@ devforge --help
 
 # Command-specific help
 devforge hash --help
+
+# Use global flags
+devforge github torvalds --json
+devforge quote --save quote.txt
+devforge sysinfo --verbose
 ```
 
 ---
@@ -828,10 +992,12 @@ devforge hash --help
 **API Integration:**
 - `github` - Query GitHub API for user profiles and stats
 - `quote` - Fetch inspirational quotes
+- `joke` - Get random jokes for entertainment
 
 **Utilities:**
 - `hello` - Test command / simple greeting
 - `info` - CLI metadata
+- `version` - Version information
 - `greet` - Styled greeting messages
 
 ---
