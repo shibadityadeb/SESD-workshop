@@ -6,8 +6,17 @@ import { Logger } from '@/utils';
  * 
  * Defines the structure for command options passed to execute method.
  * Extend this interface in child classes for type-safe options.
+ * 
+ * Global Options:
+ * - json: Output results in JSON format
+ * - verbose: Show additional debugging information
+ * - save: Save output to a file
  */
 export interface CommandOptions {
+  args?: string[];       // Positional arguments
+  json?: boolean;        // --json flag (output as JSON)
+  verbose?: boolean;     // --verbose flag (detailed output)
+  save?: string;         // --save <filename> flag
   [key: string]: unknown;
 }
 

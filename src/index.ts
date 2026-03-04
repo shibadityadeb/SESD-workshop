@@ -7,6 +7,7 @@ import { Logger } from '@/utils';
 import {
   HelloCommand,
   InfoCommand,
+  VersionCommand,
   GreetCommand,
   FileInfoCommand,
   HashCommand,
@@ -14,6 +15,7 @@ import {
   SysInfoCommand,
   GitHubUserCommand,
   QuoteCommand,
+  JokeCommand,
 } from '@/commands';
 
 // Load environment variables
@@ -45,7 +47,9 @@ async function initializeCLI(): Promise<void> {
       .name('devforge')
       .description('DevForge CLI - A production-level CLI tool built with OOP architecture')
       .version('1.0.0')
-      .option('-v, --verbose', 'Enable verbose logging');
+      .option('-v, --verbose', 'Enable verbose logging')
+      .option('--json', 'Output results in JSON format')
+      .option('--save <filename>', 'Save output to a file');
 
     // Get the command registry instance
     const registry = getCommandRegistry();
@@ -53,6 +57,7 @@ async function initializeCLI(): Promise<void> {
     // Register utility commands
     registry.register(new HelloCommand());
     registry.register(new InfoCommand());
+    registry.register(new VersionCommand());
 
     // Register core CLI commands
     registry.register(new GreetCommand());
@@ -64,8 +69,9 @@ async function initializeCLI(): Promise<void> {
     // Register API integration commands
     registry.register(new GitHubUserCommand());
     registry.register(new QuoteCommand());
+    registry.register(new JokeCommand());
     
-    Logger.debug('Command registry initialized with 10 commands');
+    Logger.debug('Command registry initialized with 12 commands');
 
     // Register all commands with Commander.js
     registry.registerAll(program);

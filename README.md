@@ -383,4 +383,4 @@ Contributions are welcome! Please:
 
 ---
 
-**Made with TypeScript, Commander.js, and OOP best practices**
+**Built with ❤️ by Shibaditya Deb for personal interest**

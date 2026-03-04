@@ -169,19 +169,24 @@ export class CommandRegistry {
           // e.g., for: command.argument('<username>').option('-f, --force')
           // args will be: [usernameValue, commandObject]
           const commandObj = args[args.length - 1];
-          const options = commandObj.opts();
+          const commandOptions = commandObj.opts();
+          
+          // Get global options from parent program
+          const globalOptions = commandObj.parent?.opts() || {};
           
           // Extract positional arguments (all args except the last one which is commandObj)
           const positionalArgs = args.slice(0, -1);
           
-          // Combine options and args for the command
-          const commandOptions = {
-            ...options,
-            args: positionalArgs,
+          // Merge global options, command options, and args
+          // Priority: command options > global options
+          const mergedOptions = {
+            ...globalOptions,      // Global flags (--json, --save, --verbose)
+            ...commandOptions,     // Command-specific options
+            args: positionalArgs,  // Positional arguments
           };
 
           // Execute the command
-          await command.run(commandOptions);
+          await command.run(mergedOptions);
         } catch (error) {
           Logger.error(`Command '${command.name}' execution failed:`, error);
           process.exit(1);

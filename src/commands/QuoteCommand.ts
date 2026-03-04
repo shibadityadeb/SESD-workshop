@@ -1,6 +1,6 @@
 import { Command } from 'commander';
 import { BaseCommand, CommandOptions } from './BaseCommand';
-import { Logger } from '@/utils';
+import { Logger, OutputFormatter } from '@/utils';
 import { QuoteService } from '@/services/QuoteService';
 import { ApiError } from '@/errors';
 import chalk from 'chalk';
@@ -42,13 +42,24 @@ export class QuoteCommand extends BaseCommand {
   /**
    * Execute the quote command
    */
-  public async execute(_options: CommandOptions): Promise<void> {
+  public async execute(options: CommandOptions): Promise<void> {
     try {
-      Logger.loading('Fetching inspirational quote...');
+      // Show loading only in text mode
+      if (!options.json) {
+        Logger.loading('Fetching inspirational quote...');
+      }
 
       // Fetch quote
       const quote = await this.quoteService.getRandomQuote();
 
+      // Handle JSON output
+      if (options.json) {
+        const formatter = new OutputFormatter(options);
+        formatter.output(quote);
+        return;
+      }
+
+      // Text output with formatting
       Logger.newLine();
       Logger.divider();
       Logger.header('💭 INSPIRATIONAL QUOTE');
@@ -62,10 +73,20 @@ export class QuoteCommand extends BaseCommand {
       Logger.info(chalk.bold(`― ${quote.author}`));
 
       Logger.newLine();
-      Logger.success('Quote retrieved successfully');
+
+      // Handle file saving if requested
+      if (options.save) {
+        const formatter = new OutputFormatter(options);
+        formatter.output(quote);
+      } else {
+        Logger.success('Quote retrieved successfully');
+      }
 
     } catch (error) {
-      Logger.newLine();
+      if (!options.json) {
+        Logger.newLine();
+      }
+      
       if (error instanceof ApiError) {
         if (error.statusCode === 404) {
           Logger.error('No quotes available at the moment');

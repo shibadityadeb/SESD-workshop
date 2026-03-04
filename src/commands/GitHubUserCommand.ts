@@ -1,6 +1,6 @@
 import { Command } from 'commander';
 import { BaseCommand, CommandOptions } from './BaseCommand';
-import { Logger } from '@/utils';
+import { Logger, OutputFormatter } from '@/utils';
 import { Validator } from '@/validators';
 import { GitHubApiService } from '@/services/GitHubApiService';
 import { ApiError } from '@/errors';
@@ -61,11 +61,22 @@ export class GitHubUserCommand extends BaseCommand {
     }
 
     try {
-      Logger.loading('Fetching GitHub user information...');
+      // Show loading only in text mode
+      if (!options.json) {
+        Logger.loading('Fetching GitHub user information...');
+      }
 
       // Fetch user data from GitHub API
       const user = await this.githubService.getUser(username);
 
+      // Handle JSON output
+      if (options.json) {
+        const formatter = new OutputFormatter(options);
+        formatter.output(user);
+        return;
+      }
+
+      // Text output with formatting
       Logger.newLine();
       Logger.divider();
       Logger.header(`👤 GITHUB USER: ${user.login}`);
@@ -97,10 +108,19 @@ export class GitHubUserCommand extends BaseCommand {
       Logger.info(`🔗 Profile: ${user.html_url}`);
       Logger.newLine();
 
-      Logger.success('User information retrieved successfully');
+      // Handle file saving if requested
+      if (options.save) {
+        const formatter = new OutputFormatter(options);
+        formatter.output(user);
+      } else {
+        Logger.success('User information retrieved successfully');
+      }
 
     } catch (error) {
-      Logger.newLine();
+      if (!options.json) {
+        Logger.newLine();
+      }
+      
       if (error instanceof ApiError) {
         if (error.statusCode === 404) {
           Logger.error(`User '${username}' not found on GitHub`);

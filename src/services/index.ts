@@ -10,3 +10,5 @@ export { GitHubApiService } from './GitHubApiService';
 export type { GitHubUser } from './GitHubApiService';
 export { QuoteService } from './QuoteService';
 export type { Quote } from './QuoteService';
+export { JokeService } from './JokeService';
+export type { Joke } from './JokeService';

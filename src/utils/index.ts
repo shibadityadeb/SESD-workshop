@@ -5,3 +5,5 @@
  */
 
 export { Logger } from './Logger';
+export { OutputFormatter } from './OutputFormatter';
+export type { OutputOptions } from './OutputFormatter';

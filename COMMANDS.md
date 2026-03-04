@@ -1009,4 +1009,4 @@ devforge <command> --help                   # Command help
 
 ---
 
-**Built with ❤️ using TypeScript, Commander.js, and OOP principles**
+**Built with ❤️ by Shibaditya Deb for personal interest**
