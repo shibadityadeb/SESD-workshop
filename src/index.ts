@@ -4,7 +4,16 @@ import { Command } from 'commander';
 import dotenv from 'dotenv';
 import { getCommandRegistry } from '@/registry';
 import { Logger } from '@/utils';
-import { HelloCommand, InfoCommand, GitHubUserCommand } from '@/commands';
+import {
+  HelloCommand,
+  InfoCommand,
+  GitHubUserCommand,
+  GreetCommand,
+  FileInfoCommand,
+  HashCommand,
+  ValidateEmailCommand,
+  SysInfoCommand,
+} from '@/commands';
 
 // Load environment variables
 dotenv.config();
@@ -40,10 +49,17 @@ async function initializeCLI(): Promise<void> {
     // Get the command registry instance
     const registry = getCommandRegistry();
 
-    // Register commands
+    // Register example commands
     registry.register(new HelloCommand());
     registry.register(new InfoCommand());
     registry.register(new GitHubUserCommand());
+
+    // Register core CLI commands
+    registry.register(new GreetCommand());
+    registry.register(new FileInfoCommand());
+    registry.register(new HashCommand());
+    registry.register(new ValidateEmailCommand());
+    registry.register(new SysInfoCommand());
     
     Logger.debug('Command registry initialized');
 
