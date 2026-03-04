@@ -42,6 +42,19 @@ npm install
 npm run build
 ```
 
+### API Setup (Optional)
+
+**For GitHub Command (Optional):**
+- Works without token (60 requests/hour)
+- With token: 5,000 requests/hour
+- Setup: `cp .env.example .env` and add `GITHUB_TOKEN=your_token_here`
+
+**For Quote Command:**
+- No API key required - works out of the box!
+
+**Quote Command:**
+- ✅ No setup required - works out of the box!
+
 ### Usage
 
 ```bash
@@ -77,11 +90,12 @@ devforge <command> [options]
 | `hello [name]` | `hi` | Simple hello world command |
 | `info` | - | Display CLI information |
 
-### API Commands (1)
+### API Commands (2)
 
 | Command | Alias | Description |
 |---------|-------|-------------|
-| `github-user <username>` | - | Fetch GitHub user information |
+| `github <username>` | `gh` | Fetch GitHub user information |
+| `quote` | `q` | Get random inspirational quote |
 
 ---
 
@@ -171,11 +185,51 @@ $ devforge sysinfo --detailed
   [████████████████████████████████████████░░] 97.86%
 ```
 
+### GitHub API Integration
+```bash
+$ devforge github octocat
+
+⏳ Fetching GitHub user information...
+
+──────────────────────────────────────────────────
+👤 GITHUB USER: octocat
+──────────────────────────────────────────────────
+
+Name:         The Octocat
+Location:     San Francisco
+Company:      @github
+
+📊 STATS:
+  Public Repos:     8
+  Followers:        21965
+  Following:        9
+  Account Created:  2011-01-25
+
+🔗 Profile: https://github.com/octocat
+```
+
+### Inspirational Quotes
+```bash
+$ devforge quote
+
+⏳ Fetching inspirational quote...
+
+──────────────────────────────────────────────────
+💭 INSPIRATIONAL QUOTE
+──────────────────────────────────────────────────
+
+"Hope means hoping when everything seems hopeless."
+
+― Gilbert Chesterton
+```
+
 ---
 
 ## 📖 Documentation
 
-- **[COMMANDS.md](COMMANDS.md)** - Complete command reference with examples
+- **[README.md](README.md)** - Project overview and quick start (you are here!)
+- **[COMMANDS.md](COMMANDS.md)** - Complete command reference with detailed examples
+- **[API-GUIDE.md](API-GUIDE.md)** - API integration guide and best practices
 - **[ARCHITECTURE.md](ARCHITECTURE.md)** - OOP architecture and design patterns
 - **[CONTRIBUTING.md](CONTRIBUTING.md)** - How to add new commands *(coming soon)*
 

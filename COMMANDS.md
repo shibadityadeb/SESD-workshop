@@ -62,7 +62,8 @@ devforge <command> --help
 | `hash` | `h` | Core | Generate cryptographic hashes |
 | `validate-email` | `ve` | Core | Validate email addresses |
 | `sysinfo` | `si` | Core | Display system information |
-| `github-user` | - | API | Fetch GitHub user information |
+| `github` | `gh` | API | Fetch GitHub user information |
+| `quote` | `q` | API | Get random inspirational quote |
 
 ---
 
@@ -511,13 +512,14 @@ A production-level CLI tool built with OOP architecture
 
 ## API Integration Commands
 
-### 8. **github-user** - GitHub User Lookup
+### 8. **github** - GitHub User Lookup
 
 **Purpose:** Fetch and display GitHub user information via GitHub API
 
 **Usage:**
 ```bash
-devforge github-user <username>
+devforge github <username>
+devforge gh <username>      # Using alias
 ```
 
 **Arguments:**
@@ -526,31 +528,30 @@ devforge github-user <username>
 **Examples:**
 ```bash
 # Fetch user info
-devforge github-user torvalds
+devforge github octocat
+
+# Check Linus Torvalds
+devforge gh torvalds
 
 # Check organization
-devforge github-user github
-
-# Your own profile
-devforge github-user octocat
+devforge github github
 ```
 
 **Output:**
 ```
-Fetching GitHub user information...
+⏳ Fetching GitHub user information...
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+──────────────────────────────────────────────────
 👤 GITHUB USER: torvalds
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+──────────────────────────────────────────────────
 
 Name:         Linus Torvalds
-Bio:          Creator of Linux
 Location:     Portland, OR
 Company:      Linux Foundation
 
 📊 STATS:
-  Public Repos:     5
-  Followers:        150000
+  Public Repos:     11
+  Followers:        288526
   Following:        0
   Account Created:  2011-09-03
 
@@ -565,13 +566,107 @@ Company:      Linux Foundation
 - 🔗 Direct link to GitHub profile
 - ⚡ Real-time API integration with GitHub
 - ❌ Error handling for non-existent users
-- 🔄 Automatic retry logic with exponential backoff
+- 🔄 Automatic retry logic with exponential backoff (3 attempts)
+- 🔐 Optional token authentication for higher rate limits
 
 **Error Handling:**
 ```bash
-devforge github-user nonexistentuser12345
-# ✖ API Error: User not found (404)
+# User not found
+devforge github nonexistentuser999
+# ✖ User 'nonexistentuser999' not found on GitHub
+
+# Rate limit exceeded
+# ✖ GitHub API rate limit exceeded
+# ⚠ Tip: Add GITHUB_TOKEN to .env for higher rate limits
+
+# Network error
+# ✖ Network error: Unable to connect to GitHub API
+# ⚠ Please check your internet connection
 ```
+
+**Rate Limits:**
+- Without token: 60 requests/hour
+- With token: 5,000 requests/hour
+- Add `GITHUB_TOKEN` to `.env` for higher limits (optional)
+
+---
+
+### 9. **quote** - Inspirational Quotes
+
+**Purpose:** Get random inspirational quotes from a curated collection
+
+**Usage:**
+```bash
+devforge quote
+devforge q                  # Using alias
+```
+
+**No Arguments Required**
+
+**Setup:** ✅ No API key needed - works out of the box!
+
+**Examples:**
+```bash
+# Get a random quote
+devforge quote
+
+# Using alias
+devforge q
+```
+
+**Output Example 1:**
+```
+⏳ Fetching inspirational quote...
+
+──────────────────────────────────────────────────
+💭 INSPIRATIONAL QUOTE
+──────────────────────────────────────────────────
+
+"If you want to achieve anything in this world, you have to
+  get used to the idea that not everyone will like you."
+
+― Simon Sinek
+
+✔ Quote retrieved successfully
+```
+
+**Output Example 2:**
+```
+──────────────────────────────────────────────────
+💭 INSPIRATIONAL QUOTE
+──────────────────────────────────────────────────
+
+"Hope means hoping when everything seems hopeless."
+
+― Gilbert Chesterton
+
+✔ Quote retrieved successfully
+```
+
+**Features:**
+- 💭 Curated inspirational quotes
+- 📝 Automatic text wrapping for long quotes
+- 🎨 Beautiful styled output with italics
+- 👤 Author attribution
+- 🆓 No API key required
+- 🔄 Different quote each time
+
+**Error Handling:**
+```bash
+# Network error
+# ✖ Network error: Unable to connect to Quote API
+# ⚠ Please check your internet connection
+
+# API unavailable
+# ✖ No quotes available at the moment
+# ⚠ Please try again later
+```
+
+**API Details:**
+- Provider: ZenQuotes.io
+- Free tier: 50 quotes/day
+- Authentication: None required
+- Documentation: https://zenquotes.io/
 
 ---
 
@@ -629,8 +724,41 @@ devforge hash --help
 2. **API Keys**: Store sensitive data in `.env` file (automatically loaded)
    ```bash
    # .env
-   GITHUB_TOKEN=your_token_here
-   API_KEY=secret_key
+   GITHUB_TOKEN=your_github_token
+   ```
+   
+3. **Never Commit `.env`**: Always in `.gitignore`
+   ```bash
+   # Use .env.example for documentation
+   cp .env.example .env
+   ```
+
+### 🌐 API Integration
+
+1. **Check API Status**: If a command fails, verify the API is operational
+   ```bash
+   # GitHub Status: https://www.githubstatus.com/
+   ```
+
+2. **Rate Limit Awareness**: Know your limits
+   ```bash
+   # GitHub without token: 60/hour
+   # GitHub with token: 5000/hour
+   # Quote: 50/day
+   ```
+
+3. **Cache Results**: For repeated queries, save output to avoid API calls
+   ```bash
+   # Save GitHub profile to file
+   devforge github octocat > profile.txt
+   
+   # Read cached result
+   cat profile.txt
+   ```
+
+4. **Error Debugging**: Use verbose mode for API issues
+   ```bash
+   devforge -v github octocat
    ```
 
 ### 📝 Scripting & Automation
@@ -698,7 +826,8 @@ devforge hash --help
 - `sysinfo` - Check system resources and configuration
 
 **API Integration:**
-- `github-user` - Query GitHub API for user data
+- `github` - Query GitHub API for user profiles and stats
+- `quote` - Fetch inspirational quotes
 
 **Utilities:**
 - `hello` - Test command / simple greeting
@@ -746,6 +875,18 @@ HASH1=$(devforge h "data1" | grep "Hex:" | awk '{print $2}')
 HASH2=$(devforge h "data2" | grep "Hex:" | awk '{print $2}')
 ```
 
+### 5. API Data Fetching
+```bash
+# Get user information
+devforge github octocat
+
+# Get daily inspiration
+devforge quote
+
+# Save API results to file
+devforge github torvalds > profile.txt
+```
+
 ---
 
 ## Error Handling
@@ -769,8 +910,17 @@ devforge fileinfo nonexistent.txt
 
 ### API Errors
 ```bash
-devforge github-user invalid___user
-# ✖ API Error: User not found (404)
+# User not found (GitHub)
+devforge github invalid___user
+# ✖ User 'invalid___user' not found on GitHub
+
+# Network error
+# ✖ Network error: Unable to connect to [API Name]
+# ⚠ Please check your internet connection
+
+# Rate limit exceeded
+# ✖ GitHub API rate limit exceeded
+# ⚠ Tip: Add GITHUB_TOKEN to .env for higher rate limits
 ```
 
 ---
@@ -781,10 +931,24 @@ Commands can use environment variables from `.env` file:
 
 ```bash
 # .env
+
+# GitHub API (Optional - for higher rate limits)
 GITHUB_TOKEN=ghp_xxxxxxxxxxxx
-API_TIMEOUT=5000
-LOG_LEVEL=debug
+
+# Application Configuration
+API_TIMEOUT=10000
+LOG_LEVEL=info
+DEBUG=false
 ```
+
+**Setup:**
+1. Copy template: `cp .env.example .env`
+2. Add your API keys (if using GitHub with higher limits)
+3. Never commit `.env` to Git (already in `.gitignore`)
+
+**Optional Keys:**
+- 🔹 `GITHUB_TOKEN` - Increases GitHub rate limit from 60 to 5000 requests/hour
+- 🔹 Quote API requires no key (no setup needed)
 
 Automatically loaded at CLI startup.
 
@@ -821,8 +985,11 @@ devforge validate-email email@test.com -v  # Verbose validation
 devforge si                                 # Basic system info
 devforge sysinfo --detailed                 # Detailed system info
 
-# API
-devforge github-user octocat                # GitHub user lookup
+# API Integration
+devforge github octocat                     # GitHub user lookup
+devforge gh torvalds                        # Using alias
+devforge quote                              # Random quote
+devforge q                                  # Quote using alias
 
 # Help
 devforge --help                             # All commands
@@ -833,7 +1000,10 @@ devforge <command> --help                   # Command help
 
 ## Support & Documentation
 
+- **Commands Reference:** [COMMANDS.md](COMMANDS.md) - You are here!
+- **API Integration Guide:** [API-GUIDE.md](API-GUIDE.md) - Complete API documentation
 - **Architecture Guide:** [ARCHITECTURE.md](ARCHITECTURE.md) - Full OOP architecture documentation
+- **Project Overview:** [README.md](README.md) - Quick start and features
 - **Source Code:** `src/` directory - All command implementations
 - **Issues:** Report bugs or request features via GitHub issues
 

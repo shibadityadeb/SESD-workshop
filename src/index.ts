@@ -7,12 +7,13 @@ import { Logger } from '@/utils';
 import {
   HelloCommand,
   InfoCommand,
-  GitHubUserCommand,
   GreetCommand,
   FileInfoCommand,
   HashCommand,
   ValidateEmailCommand,
   SysInfoCommand,
+  GitHubUserCommand,
+  QuoteCommand,
 } from '@/commands';
 
 // Load environment variables
@@ -49,10 +50,9 @@ async function initializeCLI(): Promise<void> {
     // Get the command registry instance
     const registry = getCommandRegistry();
 
-    // Register example commands
+    // Register utility commands
     registry.register(new HelloCommand());
     registry.register(new InfoCommand());
-    registry.register(new GitHubUserCommand());
 
     // Register core CLI commands
     registry.register(new GreetCommand());
@@ -60,8 +60,12 @@ async function initializeCLI(): Promise<void> {
     registry.register(new HashCommand());
     registry.register(new ValidateEmailCommand());
     registry.register(new SysInfoCommand());
+
+    // Register API integration commands
+    registry.register(new GitHubUserCommand());
+    registry.register(new QuoteCommand());
     
-    Logger.debug('Command registry initialized');
+    Logger.debug('Command registry initialized with 10 commands');
 
     // Register all commands with Commander.js
     registry.registerAll(program);

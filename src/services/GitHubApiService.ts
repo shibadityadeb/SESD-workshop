@@ -8,12 +8,21 @@ import { BaseApiService } from './BaseApiService';
 export interface GitHubUser {
   login: string;
   id: number;
-  name: string;
-  bio: string;
+  name: string | null;
+  bio: string | null;
+  company: string | null;
+  location: string | null;
+  email: string | null;
+  blog: string | null;
+  twitter_username: string | null;
   public_repos: number;
+  public_gists: number;
   followers: number;
   following: number;
   created_at: string;
+  updated_at: string;
+  html_url: string;
+  avatar_url: string;
 }
 
 /**

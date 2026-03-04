@@ -22,8 +22,9 @@ import { ApiError } from '@/errors';
  *   devforge github-user torvalds
  */
 export class GitHubUserCommand extends BaseCommand {
-  public readonly name = 'github-user';
+  public readonly name = 'github';
   public readonly description = 'Fetch GitHub user information';
+  public readonly aliases = ['gh'];
   
   private githubService: GitHubApiService;
 
@@ -36,7 +37,9 @@ export class GitHubUserCommand extends BaseCommand {
    * Configure command arguments
    */
   public configure(command: Command): Command {
-    return command.argument('<username>', 'GitHub username');
+    return command
+      .argument('<username>', 'GitHub username to lookup')
+      .aliases(this.aliases);
   }
 
   /**
@@ -58,35 +61,55 @@ export class GitHubUserCommand extends BaseCommand {
     }
 
     try {
-      Logger.loading(`Fetching user data for: ${username}`);
+      Logger.loading('Fetching GitHub user information...');
 
       // Fetch user data from GitHub API
       const user = await this.githubService.getUser(username);
 
       Logger.newLine();
-      Logger.success('User found!');
+      Logger.divider();
+      Logger.header(`👤 GITHUB USER: ${user.login}`);
+      Logger.divider();
       Logger.newLine();
 
-      // Display user information
-      Logger.table({
-        'Username': user.login,
-        'Name': user.name || 'N/A',
-        'Bio': user.bio || 'N/A',
-        'Public Repos': user.public_repos,
-        'Followers': user.followers,
-        'Following': user.following,
-        'Joined': new Date(user.created_at).toLocaleDateString(),
-      });
+      // Basic Information
+      if (user.name) {
+        Logger.info(`Name:         ${user.name}`);
+      }
+      if (user.bio) {
+        Logger.info(`Bio:          ${user.bio}`);
+      }
+      if (user.location) {
+        Logger.info(`Location:     ${user.location}`);
+      }
+      if (user.company) {
+        Logger.info(`Company:      ${user.company}`);
+      }
 
       Logger.newLine();
-      Logger.info(`Profile: https://github.com/${user.login}`);
+      Logger.info('📊 STATS:');
+      Logger.info(`  Public Repos:     ${user.public_repos}`);
+      Logger.info(`  Followers:        ${user.followers}`);
+      Logger.info(`  Following:        ${user.following}`);
+      Logger.info(`  Account Created:  ${new Date(user.created_at).toISOString().split('T')[0]}`);
+
+      Logger.newLine();
+      Logger.info(`🔗 Profile: ${user.html_url}`);
+      Logger.newLine();
+
+      Logger.success('User information retrieved successfully');
 
     } catch (error) {
+      Logger.newLine();
       if (error instanceof ApiError) {
         if (error.statusCode === 404) {
           Logger.error(`User '${username}' not found on GitHub`);
         } else if (error.isNetworkError()) {
           Logger.error('Network error: Unable to connect to GitHub API');
+          Logger.warning('Please check your internet connection');
+        } else if (error.statusCode === 403) {
+          Logger.error('GitHub API rate limit exceeded');
+          Logger.warning('Tip: Add GITHUB_TOKEN to .env for higher rate limits');
         } else {
           Logger.error(`GitHub API error (${error.statusCode}): ${error.message}`);
         }
