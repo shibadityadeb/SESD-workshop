@@ -1,11 +1,15 @@
 {
   "name": "devforge-cli",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "DevForge CLI - A production-level CLI tool built with Node.js and TypeScript",
   "main": "dist/index.js",
   "bin": {
     "devforge": "./dist/index.js"
   },
+  "files": [
+    "dist/",
+    "README.md"
+  ],
   "scripts": {
     "dev": "ts-node -r tsconfig-paths/register src/index.ts",
     "build": "tsc && tsc-alias",

@@ -1,0 +1,46 @@
+# Source code (only publish dist/)
+src/
+*.ts
+!*.d.ts
+
+# Development files
+tsconfig.json
+tsconfig.*.json
+.nvmrc
+.editorconfig
+
+# Tests
+tests/
+*.test.js
+*.spec.js
+__tests__/
+
+# Documentation (except README)
+docs/
+ARCHITECTURE.md
+API-GUIDE.md
+COMMANDS.md
+README-OLD.md
+
+# Development dependencies
+.vscode/
+.idea/
+
+# Environment and configs
+.env
+.env.*
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# CI/CD
+.github/
+.travis.yml
+.gitlab-ci.yml
+
+# Misc
+*.log
+npm-debug.log*
+.DS_Store
